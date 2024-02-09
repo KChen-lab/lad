@@ -1,4 +1,15 @@
-# Table of content
+## System requirements
+- Software dependencies:
+  - Windows/Linux/Mac OS (tested on Windows 10)
+  - R (>=4.0.0; tested on 4.3.1)
+  - Seurat (>=5.0.0; tested on 5.0.0)
+
+## Installation
+- R can be downloaded here: https://www.r-project.org/. We recommend R studio for easier data exploration: https://www.rstudio.com/categories/rstudio-ide/. (~5 minutes)
+- Seurat can be installed here (~5 minutes)
+- LAD does not require installation. It can be run directly by loading it with `source("R/lad_seurat.R")` and run with `RunALT` (see examples for details).
+
+## Examples
 | Dataset  | Item                               | File                                                |
 |----------|------------------------------------|-----------------------------------------------------|
 |          |Implementation of BCD for Seurat    |bcd_seurat.R                                         |
