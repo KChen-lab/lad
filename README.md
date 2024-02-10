@@ -29,3 +29,6 @@
 |	   |BCD and Euclidean			|lung.Rmd/nb.html                                     |
 | Lung	   |Seurat integration			|lung_seurat_integration.Rmd/nb.html                  |
 |	   |Harmony				|lung_harmony_integration.Rmd/nb.html                 |
+
+## Data
+Processed data for the Lung example can be found [here](https://drive.google.com/drive/folders/1-Fh9ZYkXAiwcr-RXvtzHaCtNThXFg72X?usp=drive_link).
