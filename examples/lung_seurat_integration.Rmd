@@ -14,40 +14,11 @@ library(Matrix)
 library(Seurat)
 ```
 
-
-```{r}
-library(clusterCrit)
-```
-
 # Overview of the dataset
 We first overview the dataset.
 
 ```{r}
-#data <- read.csv("../data/miller20/expr.csv")
-#rownames(data) <- data$index
-#data <- data[-1]
-#data <- as.matrix(data)
-```
-
-```{r}
-#saveRDS(object = data, file = "data.RDS")
-```
-
-```{r}
-data <- readRDS("data.RDS")
-```
-
-```{r}
-meta.data <- read.csv("../data/miller20/meta.data.csv", row.names = 1)
-```
-
-```{r}
-obj <- CreateSeuratObject(t(data), meta.data = meta.data)
-```
-
-```{r}
-rm(data)
-gc()
+obj <- readRDS("miller20.RDS")
 ```
 
 ```{r}
@@ -101,58 +72,8 @@ obj <- RunUMAP(obj, dims = 1:30, verbose=FALSE)
 ```
 
 ```{r}
-saveRDS(obj, "lung_seurat.RDS")
-```
-
-```{r}
-#obj <- readRDS("lung_seurat.RDS")
-```
-
-
-```{r}
-DimPlot(obj, reduction = "umap", group.by = "Cell_group", label = T, repel=T, label.size = 5,  pt.size = 0) +
-  theme(axis.text.x=element_blank(),
-        axis.ticks.x=element_blank(),
-        axis.text.y=element_blank(),
-        axis.ticks.y=element_blank(),
-        text=element_text(size=18))
-ggsave("lung_seurat_group.pdf")
-
-DimPlot(obj, reduction = "umap", group.by = "Cell_group", label = T, repel=T, label.size = 8,  pt.size = 0) +
-  theme(axis.text.x=element_blank(),
-        axis.ticks.x=element_blank(),
-        axis.text.y=element_blank(),
-        axis.ticks.y=element_blank(),
-        text=element_text(size=30))
-ggsave("lung_seurat_group.png", height=12, width=18, dpi = 100)
-```
-
-```{r fig.height=8, fig.width=18}
-DimPlot(obj, reduction = "umap", group.by = "Cell_type", label = T, repel=T, label.size = 4,  pt.size = 0) +
-  theme(axis.text.x=element_blank(),
-        axis.ticks.x=element_blank(),
-        axis.text.y=element_blank(),
-        axis.ticks.y=element_blank(),
-        text=element_text(size=18))
-ggsave("lung_seurat_label.pdf")
-```
-
-
-```{r}
-DimPlot(obj, reduction = "umap", group.by = "Sample", label.size = 5,  pt.size = 0) +
-  theme(axis.text.x=element_blank(),
-        axis.ticks.x=element_blank(),
-        axis.text.y=element_blank(),
-        axis.ticks.y=element_blank(),
-        text=element_text(size=18))
-ggsave("lung_seurat_sample.pdf")
-
-p<-DimPlot(obj, reduction = "umap", group.by = "Sample", label.size = 12,  pt.size = 0) +
-  theme(axis.text.x=element_blank(),
-        axis.ticks.x=element_blank(),
-        axis.text.y=element_blank(),
-        axis.ticks.y=element_blank(),
-        text=element_text(size=30))
-ggsave("lung_seurat_sample.png", height=12, width=18, dpi = 100)
+write.csv(obj@reductions$pca@cell.embeddings, '../output-embeddings/lung_seurat_bcd.csv')
+write.csv(obj@reductions$umap@cell.embeddings, '../output-embeddings/lung_seurat_umap.csv')
+saveRDS(obj, "../output-embeddings/lung_seurat.RDS")
 ```
 

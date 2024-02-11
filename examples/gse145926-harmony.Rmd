@@ -5,6 +5,7 @@ output: html_notebook
 
 ```{r}
 library(Seurat)
+library(harmony)
 ```
 
 
@@ -93,39 +94,10 @@ obj <- RunUMAP(obj, reduction = "harmony", dims = 1:30, verbose=FALSE, reduction
 ```
 
 ```{r}
-DimPlot(obj, reduction = "umap", group.by = "sample_new", label.size = 5,  pt.size = 0) +
-  theme(axis.text.x=element_blank(),
-        axis.ticks.x=element_blank(),
-        axis.text.y=element_blank(),
-        axis.ticks.y=element_blank(),
-        text=element_text(size=18))
-ggsave("covid_harmony_sample.pdf")
-
-DimPlot(obj, reduction = "umap", group.by = "sample_new", label.size = 10,  pt.size = 0) +
-  theme(axis.text.x=element_blank(),
-        axis.ticks.x=element_blank(),
-        axis.text.y=element_blank(),
-        axis.ticks.y=element_blank(),
-        text=element_text(size=30))
-ggsave("covid_harmony_sample.png", height=12, width=18, dpi = 100)
+write.csv(obj@reductions$harmony@cell.embeddings, '../output-embeddings/gse145926_harmony.csv')
+write.csv(obj@reductions$umap@cell.embeddings, '../output-embeddings/gse145926_harmony_umap.csv')
 ```
-
 
 ```{r}
-DimPlot(obj, reduction = "umap", group.by = "celltype", label = T, repel=T, label.size = 5,  pt.size = 0) +
-  theme(axis.text.x=element_blank(),
-        axis.ticks.x=element_blank(),
-        axis.text.y=element_blank(),
-        axis.ticks.y=element_blank(),
-        text=element_text(size=18))
-ggsave("covid_harmony_label.pdf")
-
-DimPlot(obj, reduction = "umap", group.by = "celltype", label = T, repel=T, label.size = 10,  pt.size = 0) +
-  theme(axis.text.x=element_blank(),
-        axis.ticks.x=element_blank(),
-        axis.text.y=element_blank(),
-        axis.ticks.y=element_blank(),
-        text=element_text(size=30))
-ggsave("covid_harmony_label.png", height=12, width=18, dpi = 100)
+saveRDS(obj, "../output-embeddings/gse145926_harmony.RDS")
 ```
-

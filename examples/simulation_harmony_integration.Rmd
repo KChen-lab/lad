@@ -54,22 +54,22 @@ batch_effect2 = floor((runif(200, 0, 1) > 0.85) * runif(200, 0, batch_strength))
 ```{r}
 sample1 = matrix(NA, ncol=1000, nrow=200)
 label1 = rep("pluri", 1000)
-for (i in 1:400){
+for (i in 1:250){
   p = runif(1, 0, 0.4) + runif(200, 0, 0.1)
   sample1[, i] <- rpois(200, floor(pluri * (1 - p) + a * p) * 100)
   label1[i] = 'S'
 }
-for (i in 401:500){
+for (i in 251:500){
   p = runif(1, 0.4, 0.7) + runif(200, 0, 0.1)
   sample1[, i] <- rpois(200, floor(pluri * (1 - p) + a * p) * 100)
   label1[i] = 'S->A'
 }
-for (i in 501:900){
+for (i in 501:750){
   p = runif(1, 0, 0.4) + runif(200, 0, 0.1)
   sample1[, i] <- rpois(200, floor(pluri * (1 - p) + b * p) * 100)
   label1[i] = 'S'
 }
-for (i in 901:1000){
+for (i in 751:1000){
   p = runif(1, 0, 0.4) + runif(200, 0, 0.1)
   sample1[, i] <- rpois(200, floor(pluri * (1 - p) + b * p) * 100)
   label1[i] = 'S->A'
@@ -345,4 +345,3 @@ DimPlot(obj, reduction = "umap", group.by = "label", label = T, repel = T, label
         text=element_text(size=30))
 ggsave("sim_harmony_label.png", height=12, width=18, dpi = 100)
 ```
-

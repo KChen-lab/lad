@@ -12,12 +12,6 @@ rm(list=ls())
 gc()
 library(Matrix)
 library(Seurat)
-library(harmony)
-```
-
-
-```{r}
-library(mclust)
 ```
 
 # Overview of the dataset
@@ -91,48 +85,64 @@ obj$short_celltype <- short_celltype
 ```{r}
 obj <- NormalizeData(obj, verbose=FALSE)
 obj <- FindVariableFeatures(obj, selection.method = "vst", nfeatures = 2000, verbose=FALSE)
-obj <- ScaleData(obj, verbose = FALSE)
-obj <- RunPCA(obj, npcs = 20, verbose = FALSE)
+
+obj <- ScaleData(obj, verbose=FALSE)
+obj <- RunPCA(obj, features = VariableFeatures(object = obj), verbose=FALSE)
+
 ElbowPlot(obj)
 ```
 
-
 ```{r}
-obj <- RunHarmony(obj, "sample", plot_convergence = TRUE)
+obj <- FindNeighbors(obj, reduction = "pca", dims = 1:15, verbose=FALSE)
+obj <- FindClusters(obj, resolution = 0.5, verbose=FALSE)
 ```
 
-```{r}
-library(clusterCrit)
-```
+## UMAP for uncorrected data
 
 ```{r}
-harmony_metric <- intCriteria(obj@reductions$harmony@cell.embeddings, 
-                          as.integer(as.factor(obj$short_celltype)), 
-                          c("Silhouette"))
-harmony_metric
+obj <- RunUMAP(obj, dims = 1:30, verbose=FALSE)
 ```
 
 ```{r}
-obj <- RunUMAP(obj, reduction = "harmony", dims = 1:20, verbose=FALSE)
+DimPlot(obj, reduction = "umap", group.by = c("sample", "short_celltype"), label = T, repel = T, pt.size = 1.)
 ```
+
+## LAD correction
 
 ```{r}
-DimPlot(obj, reduction = "umap", group.by = "age", label = T)
+#source("../R/varactor_seurat2.R")
+source("../R/lad_seurat.R")
+
+ptm = proc.time()
+feature.time.dict = c(E11 = -8,
+                      E12_rep1 = -7,
+                      E14_rep1 = -5,
+                      E14_rep2 = -5,
+                      E16 = -4,
+                      E18_rep2 = -1,
+                      E18_rep3 = -1,
+                      P0 = 0,
+                      P14 = 14,
+                      P2_rep2 = 2,
+                      P2_rep3 = 2,
+                      P5 = 5,
+                      P8_rep1 = 8,
+                      P8_rep2 = 8)
+
+obj <- RunALT(object = obj, feature.unwanted = "sample", dims.use = 1:10, reduction.use = "pca", 
+              feature.time.dict = feature.time.dict, reduction.name = "alt", reduction.key = "ALT_")
+
+proc.time() - ptm
+#alt_metric <- intCriteria(obj@reductions$alt@cell.embeddings, 
+#                          as.integer(as.factor(obj$short_celltype)), 
+#                          "Silhouette")
+#alt_metric 
 ```
 
 
 ```{r}
-DimPlot(obj, reduction = "umap", group.by = "short_celltype", label = T)
+obj <- RunUMAP(obj, reduction = "alt", dims = 1:10, verbose=FALSE, reduction.name = "altumap")
 ```
-
 ```{r}
-DimPlot(obj, reduction = "umap", group.by = "sample", label = T, repel = T)
-```
-
-```{r fig.height=12, fig.width=12}
-DimPlot(obj, reduction = "umap", split.by = "sample", group.by = "short_celltype", label = T, repel = T, ncol=3)
-```
-
-```{r fig.height=12, fig.width=12}
-DimPlot(obj, reduction = "umap", group.by = "sample", split.by = "short_celltype", label = T, repel = T, ncol=3)
+DimPlot(obj, reduction = "altumap", group.by = c("sample", "short_celltype"), label = T, repel = T, pt.size = 1.)
 ```

@@ -105,20 +105,22 @@ obj <- FindClusters(obj, resolution = 0.5, verbose=FALSE)
 ```{r}
 obj <- RunUMAP(obj, dims = 1:30, verbose=FALSE)
 ```
-
-
-```{r fig.height=12, fig.width=12}
-DimPlot(obj, reduction = "umap", split.by = "sample", group.by = "short_celltype", label = T, repel = T, ncol=3)
+```{r}
+DimPlot(obj, reduction = "umap", group.by = "short_celltype", label = T, repel = T, pt.size = 1.)
 ```
 
 ```{r fig.height=12, fig.width=12}
-DimPlot(obj, reduction = "umap", group.by = "sample", split.by = "short_celltype", label = T, repel = T, ncol=3)
+DimPlot(obj, reduction = "umap", split.by = "sample", group.by = "short_celltype", label = T, repel = T, ncol=3, pt.size = 1.)
+```
+
+```{r fig.height=12, fig.width=12}
+DimPlot(obj, reduction = "umap", group.by = "sample", split.by = "short_celltype", label = T, repel = T, ncol=3, pt.size=1.)
 ```
 
 
 ```{r}
 #source("../R/varactor_seurat2.R")
-source("varactor_seurat3.R")
+source("../R/bcd_seurat.R")
 
 ptm = proc.time()
 feature.time.dict = c(E11 = -8,
@@ -152,18 +154,16 @@ obj <- RunUMAP(obj, reduction = "alt", dims = 1:10, verbose=FALSE, reduction.nam
 ```
 
 
+```{r fig.height=12, fig.width=12}
+DimPlot(obj, reduction = "umap", split.by = "sample", group.by = "short_celltype", label = F, ncol=3, pt.size=1.)
+```
 
-
-
-```{r}
-DimPlot(obj, reduction = "umap", split.by = "sample", group.by = "short_celltype", label = F, ncol=3)
+```{r fig.height=12, fig.width=12}
+DimPlot(obj, reduction = "umap", group.by = "sample", split.by = "short_celltype", label = F, ncol=3, pt.size=1.)
 ```
 
 ```{r}
-DimPlot(obj, reduction = "umap", group.by = "sample", split.by = "short_celltype", label = F, ncol=3)
-```
-
-```{r}
+library(ggplot2)
 DimPlot(obj, reduction = "umap", group.by = "age", label.size = 5,  pt.size = 0) +
   theme(axis.text.x=element_blank(),
         axis.ticks.x=element_blank(),
@@ -274,16 +274,15 @@ ggsave("retina_alt_sample.png", height=12, width=18, dpi = 100)
 ```
 
 ```{r}
-#library(clusterCrit)
+write.csv(obj@reductions$alt@cell.embeddings, '../output-embeddings/gse118614_bcd.csv')
+write.csv(obj@reductions$pca@cell.embeddings, '../output-embeddings/gse118614_pca.csv')
+
+write.csv(obj@reductions$umap@cell.embeddings, '../output-embeddings/gse118614_pca_umap.csv')
+write.csv(obj@reductions$umap2@cell.embeddings, '../output-embeddings/gse118614_bcd_umap.csv')
+
+write.csv(obj@meta.data, '../output-embeddings/gse118614_label.csv')
 ```
 
 ```{r}
-#pca_metric <- intCriteria(obj@reductions$pca@cell.embeddings[, 1:10], 
-#                          as.integer(as.factor(obj$short_celltype)), 
-#                          "Silhouette")
-#pca_metric
-```
-
-```{r}
-
+saveRDS(obj, "../output-embeddings/gse118614_bcd.RDS")
 ```

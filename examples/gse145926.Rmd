@@ -5,6 +5,7 @@ output: html_notebook
 
 ```{r}
 library(Seurat)
+library(ggplot2)
 ```
 
 
@@ -75,6 +76,15 @@ obj <- merge(objs[[1]], objs[-1])
 ```
 
 ```{r}
+Matrix::writeMM(obj@assays$RNA@counts, "../data/COVID-19/merged_counts.mtx")
+write.csv(obj@assays$RNA@meta.features, "../data/COVID-19/features.csv")
+```
+```{r}
+
+```
+
+
+```{r}
 obj <- NormalizeData(obj, verbose=FALSE)
 obj <- FindVariableFeatures(obj, selection.method = "vst", nfeatures = 2000, verbose=FALSE)
 
@@ -85,8 +95,8 @@ ElbowPlot(obj)
 ```
 
 ```{r}
-#obj <- FindNeighbors(obj, reduction = "pca", dims = 1:30, verbose=FALSE)
-#obj <- FindClusters(obj, resolution = 0.5, verbose=FALSE)
+obj <- FindNeighbors(obj, reduction = "pca", dims = 1:30, verbose=FALSE)
+obj <- FindClusters(obj, resolution = 0.5, verbose=FALSE)
 obj$pca_clusters <- obj$seurat_clusters
 obj <- RunUMAP(obj, dims = 1:30, verbose=FALSE)
 
@@ -98,7 +108,7 @@ DimPlot(obj, reduction = "umap", split.by = "celltype", group.by = "sample_new",
 ```
 
 ```{r}
-source("../R/varactor_seurat2.R")
+source("../R/bcd_seurat.R")
 
 feature.time.dict = c(HC1 = 0,
               HC2 = 0,
@@ -204,4 +214,17 @@ DimPlot(obj, reduction = "altumap", group.by = "celltype", label = T, repel=T, l
 ggsave("covid_alt_label.png", height=12, width=18, dpi = 100)
 ```
 
+```{r}
+write.csv(obj@reductions$alt@cell.embeddings, '../output-embeddings/gse145926_bcd.csv')
+write.csv(obj@reductions$pca@cell.embeddings, '../output-embeddings/gse145926_pca.csv')
+
+write.csv(obj@reductions$altumap@cell.embeddings, '../output-embeddings/gse145926_bcd_umap.csv')
+write.csv(obj@reductions$umap@cell.embeddings, '../output-embeddings/gse145926_pca_umap.csv')
+
+write.csv(obj@meta.data, '../output-embeddings/gse145926_label.csv')
+```
+
+```{r}
+saveRDS(obj, "../output-embeddings/gse145926_bcd.RDS")
+```
 

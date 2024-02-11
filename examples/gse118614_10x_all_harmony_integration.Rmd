@@ -181,3 +181,11 @@ DimPlot(obj, reduction = "umap", split.by = "sample", group.by = "short_celltype
 ```{r fig.height=12, fig.width=12}
 DimPlot(obj, reduction = "umap", group.by = "sample", split.by = "short_celltype", label = T, repel = T, ncol=3)
 ```
+```{r}
+write.csv(obj@reductions$harmony@cell.embeddings, '../output-embeddings/gse118614_harmony.csv')
+write.csv(obj@reductions$umap@cell.embeddings, '../output-embeddings/gse118614_harmony_umap.csv')
+```
+
+```{r}
+saveRDS(obj, "../output-embeddings/gse118614_harmony.RDS")
+```
